@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next Blog App
 
-## Getting Started
+Next Blog App is a full-stack blog platform built with Next.js, React, MongoDB, and Tailwind CSS. It includes a public-facing blog feed, detailed blog pages, an email subscription form, and an admin dashboard for managing blog posts and subscribers.
 
-First, run the development server:
+## Features
+
+- Public blog feed with category filtering for All, Technology, Startup, and Lifestyle.
+- Blog detail pages loaded by dynamic route.
+- Email subscription form with toast feedback.
+- Admin dashboard for creating, listing, and deleting blog posts.
+- Subscriber management screen for viewing and removing email subscriptions.
+- MongoDB-backed API routes for blogs and email subscriptions.
+
+## Tech Stack
+
+- Next.js 16 with the App Router
+- React 19
+- MongoDB with Mongoose
+- Tailwind CSS 4
+- Axios for client-side data fetching
+- React Toastify for notifications
+
+## Project Structure
+
+```text
+app/
+  page.js                    Public homepage
+  blogs/[id]/page.jsx        Blog detail page
+  admin/                     Admin dashboard and management pages
+  api/blog/route.js          Blog CRUD API
+  api/email/route.js         Subscription API
+components/                  Shared UI components
+components/AdminComponents/  Admin table and sidebar components
+lib/config/db.js             MongoDB connection
+lib/models/                  Mongoose models for blogs and emails
+assets/                      Images, icons, and sample blog data
+public/                      Uploaded blog images
+```
+
+## Prerequisites
+
+- Node.js 18 or newer
+- npm, pnpm, yarn, or bun
+- A MongoDB database, preferably MongoDB Atlas
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Configure the MongoDB connection in [lib/config/db.js](lib/config/db.js).
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - start the local development server
+- `npm run build` - create a production build
+- `npm run start` - run the production server
+- `npm run lint` - run ESLint
 
-## Learn More
+## Routes
 
-To learn more about Next.js, take a look at the following resources:
+- `/` - homepage with the latest blogs and subscription form
+- `/blogs/[id]` - individual blog post page
+- `/admin` - admin shell
+- `/admin/addProduct` - create a new blog post
+- `/admin/blogList` - view and delete blog posts
+- `/admin/subscriptions` - view and delete email subscribers
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `GET /api/blog`
+Returns all blog posts.
 
-## Deploy on Vercel
+### `GET /api/blog?id=<blogId>`
+Returns a single blog post by MongoDB id.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### `POST /api/blog`
+Creates a new blog post. Expects multipart form data with:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `title`
+- `description`
+- `category`
+- `author`
+- `authorImg`
+- `image`
+
+### `DELETE /api/blog?id=<blogId>`
+Deletes a blog post and removes the uploaded image from `public/`.
+
+### `GET /api/email`
+Returns all subscriber emails.
+
+### `POST /api/email`
+Stores a new email subscription. Expects multipart form data with:
+
+- `email`
+
+### `DELETE /api/email?id=<subscriberId>`
+Deletes a subscriber entry.
+
+## Notes
+
+- Uploaded blog images are written to the `public/` directory so they can be served directly by Next.js.
+- The blog cards render only a preview of the description, while the detail page renders the full HTML content.
+- The current UI uses a bold, bordered visual style with Tailwind utility classes.
+
+## Deployment
+
+The app can be deployed like any standard Next.js application. Make sure the production environment has access to the same MongoDB database and that the connection string in [lib/config/db.js](lib/config/db.js) is updated for the target environment.
